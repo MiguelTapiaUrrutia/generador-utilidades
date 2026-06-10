@@ -135,6 +135,63 @@ function generarEmails(cantidad) {
   return Array.from(emails);
 }
 
+// ===== Generador de contraseñas =====
+
+const MAYUSCULAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const MINUSCULAS = "abcdefghijklmnopqrstuvwxyz";
+const NUMEROS = "0123456789";
+const SIMBOLOS = "!@#$%^&*()-_=+[]{};:,.<>?";
+
+// Entero aleatorio criptográficamente seguro entre 0 y limite-1.
+// Descarta valores fuera del múltiplo de limite para no sesgar el módulo.
+function indiceAleatorioSeguro(limite) {
+  const RANGO_UINT32 = 4294967296;
+  const maxSinSesgo = Math.floor(RANGO_UINT32 / limite) * limite;
+  const buffer = new Uint32Array(1);
+  let valor;
+  do {
+    crypto.getRandomValues(buffer);
+    valor = buffer[0];
+  } while (valor >= maxSinSesgo);
+  return valor % limite;
+}
+
+function caracterAleatorioSeguro(conjunto) {
+  return conjunto[indiceAleatorioSeguro(conjunto.length)];
+}
+
+// Fisher-Yates con azar criptográfico; devuelve una copia mezclada
+function mezclarSeguro(array) {
+  const copia = [...array];
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = indiceAleatorioSeguro(i + 1);
+    [copia[i], copia[j]] = [copia[j], copia[i]];
+  }
+  return copia;
+}
+
+function generarPassword(largo, opciones) {
+  const conjuntosActivos = [];
+  if (opciones.mayusculas) conjuntosActivos.push(MAYUSCULAS);
+  if (opciones.minusculas) conjuntosActivos.push(MINUSCULAS);
+  if (opciones.numeros) conjuntosActivos.push(NUMEROS);
+  if (opciones.simbolos) conjuntosActivos.push(SIMBOLOS);
+
+  if (conjuntosActivos.length === 0) {
+    throw new Error("Debe haber al menos un tipo de carácter seleccionado");
+  }
+
+  // Un carácter garantizado de cada conjunto activo, el resto del pool completo
+  const pool = conjuntosActivos.join("");
+  const garantizados = conjuntosActivos.map(caracterAleatorioSeguro);
+  const restantes = Array.from(
+    { length: largo - garantizados.length },
+    () => caracterAleatorioSeguro(pool)
+  );
+
+  return mezclarSeguro([...garantizados, ...restantes]).join("");
+}
+
 // ===== Interacción con el DOM =====
 
 const inputNumParrafos = document.getElementById("num-parrafos");
@@ -168,4 +225,47 @@ btnCopiarEmails.addEventListener("click", () => {
     .map((parrafo) => parrafo.textContent)
     .join("\n");
   copiarConFeedback(btnCopiarEmails, emails);
+});
+
+const inputLargoPassword = document.getElementById("largo-password");
+const btnPassword = document.getElementById("btn-password");
+const resultadoPassword = document.getElementById("resultado-password");
+const btnCopiarPassword = document.getElementById("btn-copiar-password");
+
+const checksPassword = {
+  mayusculas: document.getElementById("chk-mayusculas"),
+  minusculas: document.getElementById("chk-minusculas"),
+  numeros: document.getElementById("chk-numeros"),
+  simbolos: document.getElementById("chk-simbolos")
+};
+
+btnPassword.addEventListener("click", () => {
+  const opciones = {
+    mayusculas: checksPassword.mayusculas.checked,
+    minusculas: checksPassword.minusculas.checked,
+    numeros: checksPassword.numeros.checked,
+    simbolos: checksPassword.simbolos.checked
+  };
+
+  if (!Object.values(opciones).some(Boolean)) {
+    const mensaje = document.createElement("p");
+    mensaje.classList.add("mensaje-error");
+    mensaje.textContent = "Selecciona al menos un tipo de carácter para generar la contraseña.";
+    resultadoPassword.replaceChildren(mensaje);
+    btnCopiarPassword.hidden = true;
+    return;
+  }
+
+  const largo = leerCantidadValidada(inputLargoPassword);
+  const codigo = document.createElement("code");
+  codigo.textContent = generarPassword(largo, opciones);
+  resultadoPassword.replaceChildren(codigo);
+  btnCopiarPassword.hidden = false;
+});
+
+btnCopiarPassword.addEventListener("click", () => {
+  const codigo = resultadoPassword.querySelector("code");
+  if (codigo) {
+    copiarConFeedback(btnCopiarPassword, codigo.textContent);
+  }
 });
