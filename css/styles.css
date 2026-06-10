@@ -7,13 +7,300 @@
   padding: 0;
 }
 
-/* Variables de color */
+/* ===== Design tokens ===== */
 :root {
-  --color-fondo: #f7f7f8;
-  --color-superficie: #ffffff;
-  --color-texto: #1f2328;
-  --color-texto-secundario: #57606a;
-  --color-primario: #2563eb;
-  --color-acento: #16a34a;
-  --color-borde: #d0d7de;
+  /* Colores */
+  --color-papel: #faf4ea;          /* beige papel, fondo general */
+  --color-superficie: #fffdf8;     /* blanco cálido para bloques internos */
+  --color-texto: #2b2d31;          /* gris grafito oscuro */
+  --color-texto-suave: #4a4d55;    /* texto secundario, AA sobre papel */
+  --color-borde: #16181d;          /* casi-negro para bordes y sombras */
+  --color-teal-pastel: #b8e0d2;
+  --color-naranja-pastel: #ffd6a5;
+  --color-teal-vivo: #2ec4b6;      /* botones primarios */
+  --color-naranja-vivo: #ff9f1c;   /* botones copiar y foco */
+
+  /* Bordes, radios y sombras duras */
+  --grosor-borde: 3px;
+  --radio: 4px;
+  --sombra-dura: 5px 5px 0 var(--color-borde);
+  --sombra-dura-grande: 7px 7px 0 var(--color-borde);
+  --sombra-dura-chica: 3px 3px 0 var(--color-borde);
+
+  /* Tipografía */
+  --fuente-titulos: "Archivo Black", "Arial Black", sans-serif;
+  --fuente-cuerpo: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fuente-mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+  --texto-base: 1.0625rem;
+  --texto-h2: clamp(1.5rem, 1.2rem + 1.5vw, 2rem);
+  --texto-gigante: clamp(2.5rem, 1.5rem + 6vw, 4.75rem);
+
+  /* Espaciado y layout */
+  --espacio-1: 0.5rem;
+  --espacio-2: 1rem;
+  --espacio-3: 1.5rem;
+  --espacio-4: 2.5rem;
+  --ancho-contenido: 720px;
+
+  /* Movimiento */
+  --duracion-rapida: 120ms;
+}
+
+/* ===== Base ===== */
+body {
+  background-color: var(--color-papel);
+  color: var(--color-texto);
+  font-family: var(--fuente-cuerpo);
+  font-size: var(--texto-base);
+  line-height: 1.6;
+}
+
+/* ===== Header gigante ===== */
+header {
+  background-color: var(--color-teal-pastel);
+  border-bottom: var(--grosor-borde) solid var(--color-borde);
+  padding: var(--espacio-4) var(--espacio-2);
+  text-align: center;
+}
+
+header h1 {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-gigante);
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  max-width: var(--ancho-contenido);
+  margin-inline: auto;
+}
+
+/* ===== Layout principal: columna de cards ===== */
+main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-4);
+  max-width: var(--ancho-contenido);
+  margin-inline: auto;
+  padding: var(--espacio-4) var(--espacio-2);
+}
+
+/* ===== Cards ===== */
+main > section {
+  background-color: var(--color-superficie);
+  border: var(--grosor-borde) solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-dura);
+  padding: var(--espacio-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+#lorem-ipsum {
+  background-color: var(--color-teal-pastel);
+}
+
+#emails-prueba {
+  background-color: var(--color-naranja-pastel);
+}
+
+main > section h2 {
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-h2);
+  text-transform: uppercase;
+  background-color: var(--color-superficie);
+  border: var(--grosor-borde) solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-dura-chica);
+  padding: var(--espacio-1) var(--espacio-2);
+  align-self: flex-start;
+}
+
+#contrasenas h2 {
+  background-color: var(--color-teal-pastel);
+}
+
+/* ===== Controles ===== */
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+label {
+  font-weight: 700;
+}
+
+input[type="number"] {
+  font-family: var(--fuente-cuerpo);
+  font-size: var(--texto-base);
+  font-weight: 700;
+  color: var(--color-texto);
+  background-color: var(--color-superficie);
+  border: var(--grosor-borde) solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-dura-chica);
+  padding: var(--espacio-1);
+  width: 5.5rem;
+  text-align: center;
+}
+
+fieldset {
+  border: var(--grosor-borde) solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: var(--espacio-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}
+
+legend {
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-inline: var(--espacio-1);
+}
+
+fieldset label {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-1);
+}
+
+/* Checkboxes brutalistas: cuadrado con borde grueso y check propio */
+input[type="checkbox"] {
+  appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  background-color: var(--color-superficie);
+  border: var(--grosor-borde) solid var(--color-borde);
+  border-radius: var(--radio);
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--color-teal-vivo);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2316181d' stroke-width='3' d='M2.5 8.5 6 12 13.5 4'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+}
+
+/* ===== Botones ===== */
+button {
+  font-family: var(--fuente-cuerpo);
+  font-size: var(--texto-base);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-texto);
+  background-color: var(--color-teal-vivo);
+  border: var(--grosor-borde) solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-dura);
+  padding: var(--espacio-1) var(--espacio-3);
+  cursor: pointer;
+  align-self: flex-start;
+  transition: transform var(--duracion-rapida) ease-out,
+              box-shadow var(--duracion-rapida) ease-out;
+}
+
+button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--sombra-dura-grande);
+}
+
+/* Al presionar, el botón "se hunde": viaja hacia donde estaba su sombra */
+button:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0 0 0 var(--color-borde);
+}
+
+button:disabled {
+  cursor: default;
+  transform: none;
+  box-shadow: var(--sombra-dura);
+}
+
+[id^="btn-copiar-"] {
+  background-color: var(--color-naranja-vivo);
+}
+
+/* ===== Foco siempre visible ===== */
+:focus-visible {
+  outline: var(--grosor-borde) solid var(--color-naranja-vivo);
+  outline-offset: 3px;
+}
+
+[id^="btn-copiar-"]:focus-visible,
+input[type="checkbox"]:focus-visible {
+  outline-color: var(--color-borde);
+}
+
+/* ===== Resultados ===== */
+[id^="resultado-"] {
+  background-color: var(--color-superficie);
+  border: var(--grosor-borde) solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: var(--espacio-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+/* Sin contenido no ocupa espacio */
+[id^="resultado-"]:empty {
+  display: none;
+}
+
+#resultado-password code {
+  font-family: var(--fuente-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  word-break: break-all;
+}
+
+/* ===== Mensaje de error: alert banner ===== */
+.mensaje-error {
+  background-color: var(--color-naranja-pastel);
+  border: var(--grosor-borde) solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-dura-chica);
+  font-weight: 700;
+  padding: var(--espacio-2);
+}
+
+/* ===== Footer ===== */
+footer {
+  border-top: var(--grosor-borde) solid var(--color-borde);
+  color: var(--color-texto-suave);
+  font-weight: 700;
+  text-align: center;
+  padding: var(--espacio-3) var(--espacio-2);
+}
+
+/* ===== Responsive: pantallas chicas ===== */
+@media (max-width: 600px) {
+  main {
+    padding: var(--espacio-2) var(--espacio-1);
+    gap: var(--espacio-3);
+  }
+
+  main > section {
+    padding: var(--espacio-2);
+  }
+
+  header {
+    padding: var(--espacio-3) var(--espacio-1);
+  }
+
+  .controles button,
+  #btn-password {
+    align-self: stretch;
+  }
+}
+
+/* ===== Accesibilidad: respetar reducción de movimiento ===== */
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
 }
