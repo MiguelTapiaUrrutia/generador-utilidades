@@ -1,0 +1,19 @@
+/* Reset básico */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Variables de color */
+:root {
+  --color-fondo: #f7f7f8;
+  --color-superficie: #ffffff;
+  --color-texto: #1f2328;
+  --color-texto-secundario: #57606a;
+  --color-primario: #2563eb;
+  --color-acento: #16a34a;
+  --color-borde: #d0d7de;
+}
